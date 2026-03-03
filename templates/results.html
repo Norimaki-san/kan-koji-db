@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>検索結果</title>
+
+<style>
+body { font-family: Arial; }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.column-toggle {
+    display: inline-block;
+    margin: 4px 8px 4px 0;
+}
+
+</style>
+
+<script>
+function toggleColumn(colIndex) {
+    var cells = document.querySelectorAll("td:nth-child(" + colIndex + "), th:nth-child(" + colIndex + ")");
+    cells.forEach(cell => {
+        cell.style.display = cell.style.display === "none" ? "" : "none";
+    });
+}
+</script>
+
+</head>
+<body>
+
+<h2>検索結果</h2>
+<p>検索キーワード: {{ keyword }}</p>
+
+{% if results %}
+
+<h3>表示列の切替</h3>
+<div>
+{% for col in columns %}
+    <label class="column-toggle">
+        <input type="checkbox" checked onclick="toggleColumn({{ loop.index }})">
+        {{ col }}
+    </label>
+{% endfor %}
+</div>
+
+<br>
+
+<div style="overflow-x:auto;">
+<table>
+<tr>
+{% for col in columns %}
+    <th>{{ col }}</th>
+{% endfor %}
+</tr>
+
+{% for row in results %}
+<tr>
+{% for col in columns %}
+    <td>{{ row[col] }}</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+</div>
+
+{% else %}
+<p>該当データが見つかりませんでした。</p>
+
+{% if suggestions %}
+<h3>もしかして:</h3>
+<ul>
+{% for s in suggestions %}
+<li>{{ s }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% endif %}
+
+<br>
+<a href="/">戻る</a>
+
+</body>
+</html>
