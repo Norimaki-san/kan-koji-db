@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="center-box">
+    <div class="card card-custom p-4">
+        <h5 class="mb-4 text-center text-white">ログイン</h5>
+
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label text-white">ユーザーID</label>
+                <input type="text" name="username" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-white">パスワード</label>
+                <input type="password" name="password" class="form-control">
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-main">ログイン</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

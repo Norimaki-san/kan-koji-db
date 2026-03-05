@@ -1,15 +1,83 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>データベース検索</title>
-</head>
-<body>
-    <h2>データベース検索</h2>
+{% extends "base.html" %}
+{% block content %}
 
-    <form action="/search" method="post">
-        <input type="text" name="keyword" placeholder="キーワードを入力" required>
-        <button type="submit">検索</button>
-    </form>
-</body>
-</html>
+<form method="GET" action="/search">
+
+<!-- ===== 検索エリア ===== -->
+<div class="card card-custom p-3 mb-4">
+    <div class="row g-2 align-items-center">
+        <div class="col-auto">
+            <label class="form-label mb-0">キーワード</label>
+        </div>
+        <div class="col-md-6">
+            <input type="text"
+                   name="keyword"
+                   value="{{ highlight_keyword }}"
+                   class="form-control">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-main">検索</button>
+        </div>
+    </div>
+</div>
+
+{% if show_columns %}
+
+<!-- ===== 表示列選択（検索後のみ表示） ===== -->
+<div class="card card-custom p-3 mb-3">
+    <h6>表示列選択</h6>
+    <div class="row">
+        {% for col in all_columns %}
+        <div class="col-md-3">
+            <input type="checkbox"
+                   name="display_columns"
+                   value="{{ col }}"
+                   {% if col in selected_columns %}checked{% endif %}>
+            <label>{{ col }}</label>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-3 text-end">
+        <button type="submit" class="btn btn-main">表示列を反映</button>
+    </div>
+</div>
+
+{% endif %}
+
+</form>
+
+<!-- ===== 検索結果 ===== -->
+{% if results %}
+<div class="table-wrapper">
+<table class="table table-sm">
+<thead>
+<tr>
+{% for col in columns %}
+<th>{{ col }}</th>
+{% endfor %}
+</tr>
+</thead>
+<tbody>
+{% for row in results %}
+<tr>
+{% for cell in row %}
+<td>
+{% if highlight_keyword %}
+{{ cell|string|replace(highlight_keyword,
+'<mark style="background:yellow;">'+highlight_keyword+'</mark>')|safe }}
+{% else %}
+{{ cell }}
+{% endif %}
+</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<p class="mt-2">検索件数：{{ count }}</p>
+{% endif %}
+
+{% endblock %}
